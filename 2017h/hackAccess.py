@@ -84,7 +84,10 @@ def on_message(mqttsub, obj, msg):
     RFID = msg.payload.decode('UTF-8')
     (date_time, last_seen, uuid, mFormat, name, alias, doors) = dbCheckUpd(RFID, door_num)
     #print ("door:", door_num, "doors:", doors, "user:", RFID, "uuid", uuid)
-    mqttPublish('presence', uuid+","+mFormat)
+    if door_num == "door1": 
+        mqttPublish('presence', uuid+","+mFormat)
+    if door_num == "door2": 
+        mqttPublish('absence', uuid+","+mFormat)
     if (doors != None):
         print ("doors.find", doors.find(door_num))
         if (doors.find(door_num) >= 0):
