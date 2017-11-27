@@ -65,7 +65,7 @@ def on_message(mqttsub, obj, msg):
     x, uuid = msg.payload.decode('UTF-8').split(':')
     print (door_num, uuid)
 
-    conn = my.connect(user='ben', password='hackathon', host='192.168.113.249', database='hack')
+    conn = my.connect(user='ben', password='hackathon', host='apollo.local', database='hack')
     cursor1 = conn.cursor()
     sel1 = ("SELECT last_seen, name FROM rfid_access WHERE uuid = '{}';".format(uuid))
     cursor1.execute(sel1)
@@ -74,8 +74,11 @@ def on_message(mqttsub, obj, msg):
         ret_val = (last_seen, name)
     
     last_seen, name = ret_val
+
     print (last_seen.strftime('%d %b, %H:%M'))
     print (name)
+
+    lcd_init()
 
     lcd_string(str(name), LCD_LINE_1)
     lcd_string(str(last_seen.strftime('%d %b, %H:%M')), LCD_LINE_2)
@@ -94,7 +97,7 @@ mqttsub.on_message = on_message
 mqttsub.on_connect = on_connect
 mqttsub.on_publish = on_publish
 mqttsub.on_subscribe = on_subscribe
-mqttsub.connect("192.168.113.249", 1883, 60)
+mqttsub.connect("apollo.local", 1883, 60)
 mqttsub.subscribe("doors/#", 0)
 
 mqttsub.loop_forever()
